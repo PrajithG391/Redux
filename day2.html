@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redux Shopping App Example</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.min.js"></script>
+</head>
+<body>
+  <script>
+    
+    function cartReducer(state = { cartItems: [] }, action) {
+      switch (action.type) {
+        case "ADD_TO_CART":
+          return { cartItems: [...state.cartItems, action.payload] };
+
+        case "REMOVE_FROM_CART":
+          return {
+            cartItems: state.cartItems.filter(item => item !== action.payload)
+          };
+
+        default:
+          return state;
+      }
+    }
+
+    
+    function wishlistReducer(state = { wishlist: [] }, action) {
+      switch (action.type) {
+        case "ADD_TO_WISHLIST":
+          return { wishlist: [...state.wishlist, action.payload] };
+
+        case "REMOVE_FROM_WISHLIST":
+          return {
+            wishlist: state.wishlist.filter(item => item !== action.payload)
+          };
+
+        default:
+          return state;
+      }
+    }
+
+    
+    const rootReducer = Redux.combineReducers({
+      cart: cartReducer,
+      wishlist: wishlistReducer
+    });
+
+
+    const store = Redux.createStore(rootReducer);
+
+    store.subscribe(() => {
+      console.log("🛍️ Current State:", store.getState());
+    });
+
+   
+    store.dispatch({ type: "ADD_TO_CART", payload: "Laptop" });
+    store.dispatch({ type: "ADD_TO_CART", payload: "Headphones" });
+    store.dispatch({ type: "REMOVE_FROM_CART", payload: "Laptop" });
+
+    store.dispatch({ type: "ADD_TO_WISHLIST", payload: "Smartwatch" });
+    store.dispatch({ type: "ADD_TO_WISHLIST", payload: "Gaming Mouse" });
+    store.dispatch({ type: "REMOVE_FROM_WISHLIST", payload: "Smartwatch" });
+
+  </script>
+</body>
+</html>
