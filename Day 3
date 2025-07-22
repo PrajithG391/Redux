@@ -1,0 +1,33 @@
+import { createStore, applyMiddleware } from "redux";
+
+
+const initialState = { count: 0 };
+
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+    case "INCREMENT":
+      return { ...state, count: state.count + 1 };
+    case "DECREMENT":
+      return { ...state, count: state.count - 1 };
+    default:
+      return state;
+  }
+}
+
+
+const loggerMiddleware = (store) => (next) => (action) => {
+  console.log(" Dispatching:", action);
+  console.log(" Previous State:", store.getState());
+
+  const result = next(action); 
+
+  console.log(" Next State:", store.getState());
+  return result;
+};
+
+
+const store = createStore(counterReducer, applyMiddleware(loggerMiddleware));
+
+
+store.dispatch({ type: "INCREMENT" });
+store.dispatch({ type: "DECREMENT" });
