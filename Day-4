@@ -1,0 +1,62 @@
+import React, {useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux'
+import { addtask, deletetask } from './todoReducer';
+
+function App() {
+
+  const tasks = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const [task, setTask] = useState('');
+
+  function handleChange(e){
+    setTask(e.target.value)
+  }
+
+  function handleAddTask(){
+    dispatch(addtask(task))
+  }
+
+  function handleDeleteTask(index){
+      dispatch(deletetask(index));
+  }
+
+  
+
+  return (
+    <>
+    <input type="text" onChange={handleChange} placeholder='Enter A Task'/>
+    <button onClick={handleAddTask}>Add task</button>
+    <ul>
+      {tasks.map((t, i) => (
+        <li key={i}>{t} <button onClick={() => handleDeleteTask(i)}>Delete</button></li>
+      ))}
+    </ul>
+    </>
+  )
+
+}
+
+export default App
+
+import { configureStore } from '@reduxjs/toolkit';
+import todoReducer from './todoReducer.js'
+
+export const store = configureStore({
+    reducer: todoReducer
+});
+
+import { createSlice } from '@reduxjs/toolkit'
+
+const todoReducer = createSlice({
+    name: 'todo',
+    initialState: [],
+    reducers: {
+        addtask: (state, action) => { state.push(action.payload) },
+        deletetask: (state, action) => { 
+            return  state.filter((_, i) =>  i !== action.payload)
+        },
+    },
+});
+
+export const {addtask, deletetask} = todoReducer.actions;
+export default todoReducer.reducer;
